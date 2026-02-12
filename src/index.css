@@ -1,1 +1,17 @@
 @import "tailwindcss";
+
+@import "tailwindcss";
+
+/* Custom reusable classes */
+
+.wrapper {
+    @apply max-w-7xl mx-auto px-6 py-12;
+}
+
+.heading {
+    @apply text-4xl md:text-6xl font-bold text-center leading-tight;
+}
+
+.text-gradient {
+    @apply bg-gradient-to-r from-purple-500 to-pink-500 bg-clip-text text-transparent;
+}
