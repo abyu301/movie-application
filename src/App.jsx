@@ -3,6 +3,7 @@ import Background from "./assets/background.png";
 import Banner from "./assets/banner.png";
 import Search from "./components/Search.jsx";
 import Spinner from "./components/Spinner.jsx";
+import MovieCard from "./components/MovieCard.jsx";
 
 const API_BASE_URL = "https://api.themoviedb.org/3";
 const API_KEY = import.meta.env.VITE_TMDB_API_KEY;
@@ -81,7 +82,7 @@ const App = () => {
 
                 {/* Movie List Section */}
                 <section className="w-full max-w-7xl mt-12">
-                    <h2 className="text-white text-2xl mb-4">All Movies</h2>
+                    <h2 className="text-white text-4xl mb-8">All Movies</h2>
 
                     {isLoading ? (
                         <div className="flex justify-center mt-6">
@@ -92,26 +93,12 @@ const App = () => {
                     ) : (
                         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6 mt-6">
                             {moviesList.map((movie) => (
-                                <div key={movie.id} className="text-center">
-                                    {movie.poster_path ? (
-                                        <img
-                                            src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
-                                            alt={movie.title}
-                                            className="rounded-lg object-cover w-full h-[300px]"
-                                        />
-                                    ) : (
-                                        <div className="bg-gray-700 w-full h-[300px] rounded-lg flex items-center justify-center">
-                                            <p className="text-gray-300">No Image</p>
-                                        </div>
-                                    )}
-                                    <p className="mt-2 text-white">{movie.title}</p>
-                                </div>
+                                <MovieCard key={movie.id} movie={movie} />
                             ))}
                         </div>
                     )}
-
-
                 </section>
+
             </div>
         </div>
     );

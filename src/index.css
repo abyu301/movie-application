@@ -1,7 +1,5 @@
 @import "tailwindcss";
 
-@import "tailwindcss";
-
 /* Custom reusable classes */
 
 .wrapper {
@@ -14,4 +12,21 @@
 
 .text-gradient {
     @apply bg-gradient-to-r from-purple-500 to-pink-500 bg-clip-text text-transparent;
+}
+
+/* Movie Card styles */
+.movie-card {
+    @apply bg-gray-800 p-4 rounded-xl shadow-md overflow-hidden flex flex-col;
+}
+
+.movie-card img {
+    @apply rounded-lg object-cover w-full h-[300px];
+}
+
+.movie-card h3 {
+    @apply text-white font-bold text-lg line-clamp-1;
+}
+
+.movie-card p {
+    @apply text-gray-300 text-sm;
 }
