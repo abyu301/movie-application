@@ -1,37 +1,36 @@
-import React from "react";
+import React from 'react';
+import { useState } from "react";
 import Background from "./assets/background.png";
 import Banner from "./assets/banner.png";
+import Search from "./components/Search.jsx";
 
 const App = () => {
+    const [searchTerm, setSearchTerm] = useState("");
     return (
-        <main className="min-h-screen text-white">
+        <header className="min-h-screen text-white overflow-x-hidden">
+            <section className="relative min-h-screen flex items-center justify-center px-4 overflow-hidden">
 
-            {/* HERO SECTION */}
-            <section className="relative min-h-screen flex items-center justify-center">
-
-                {/* Background Image */}
                 <img src={Background} alt="background" className="absolute inset-0 w-full h-full object-cover"
                 />
 
-                {/* Dark Overlay => This creates the dark transparent layer When i put white text directly on a colorful image, it becomes easy to read.*/}
                 <div className="absolute inset-0 bg-black/60"></div>
 
-                {/* Content */}
-                <div className="relative z-10 wrapper text-center flex flex-col items-center gap-8">
+                <div className="relative z-10 w-full max-w-7xl text-center flex flex-col items-center gap-8">
 
-                    {/* Banner Image */}
-                    <img src={Banner} alt="Top Movies Banner" className="w-full max-w-3xl mx-auto"
+                    <img src={Banner} alt="Top Movies Banner" className="w-full max-w-[500px] sm:max-w-[700px] md:max-w-3xl mx-auto object-contain"
                     />
 
-                    {/* Heading */}
                     <h1 className="heading">
                         Find <span className="text-gradient">Movies</span> You Will Enjoy Without the Hassle
                     </h1>
 
+                    <Search searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
+                    <h1 className="text-white">{searchTerm}</h1>
                 </div>
-            </section>
 
-        </main>
+            </section>
+        </header>
+
     );
 };
 
