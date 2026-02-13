@@ -1,107 +1,119 @@
-import React from 'react';
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Background from "./assets/background.png";
 import Banner from "./assets/banner.png";
 import Search from "./components/Search.jsx";
+import Spinner from "./components/Spinner.jsx";
 
-
-const API_BASE_URL = "https://api.themoviedb.org/3/";
-
+const API_BASE_URL = "https://api.themoviedb.org/3";
 const API_KEY = import.meta.env.VITE_TMDB_API_KEY;
 
 const API_OPTIONS = {
     method: "GET",
-    headers:{
+    headers: {
         accept: "application/json",
         Authorization: `Bearer ${API_KEY}`,
-    }
-}
+    },
+};
 
 const App = () => {
     const [searchTerm, setSearchTerm] = useState("");
-    const [errorMessage, setErrorMessage] = useState("");
     const [moviesList, setMoviesList] = useState([]);
-    const [isloading, setIsLoading] = useState(false);
+    const [errorMessage, setErrorMessage] = useState("");
+    const [isLoading, setIsLoading] = useState(false);
 
-
-    const fetchMovies = async () => {
+    const fetchMovies = async (query = "") => {
         setIsLoading(true);
         setErrorMessage("");
         try {
-            const endPoint = `${API_BASE_URL}/discover/movie?sort_by=popularity.desc`;
+            const endPoint = query
+                ? `${API_BASE_URL}/search/movie?query=${query}`
+                : `${API_BASE_URL}/discover/movie?sort_by=popularity.desc`;
 
             const response = await fetch(endPoint, API_OPTIONS);
 
             if (!response.ok) {
-                throw new Error("Could not find movie?");
+                throw new Error("Failed to fetch movies");
             }
 
             const data = await response.json();
-
-            if(data.Response === 'False') {
-                setErrorMessage(data.Error || 'Failed to fetch movies')
-                setMoviesList([]);
-                return;
-            }
-
             setMoviesList(data.results || []);
-
         } catch (error) {
-            console.log(`Fetch movies error: ${error}`);
-            setErrorMessage('Error fetching movies. Please try again later.');
+            console.log(error);
+            setErrorMessage("Error fetching movies. Please try again later.");
         } finally {
             setIsLoading(false);
         }
-    }
+    };
 
-
+    // Fetch movies on mount or when searchTerm changes
     useEffect(() => {
-        fetchMovies();
+        fetchMovies(searchTerm);
+    }, [searchTerm]);
 
-    }, []);
     return (
-        <header className="min-h-screen text-white overflow-x-hidden">
-            <section className="relative min-h-screen flex items-center justify-center px-4 overflow-hidden">
+        <div className="relative min-h-screen w-full overflow-x-hidden">
+            {/* Global background */}
+            <img
+                src={Background}
+                alt="background"
+                className="fixed inset-0 w-full h-full object-cover z-0"
+            />
+            <div className="fixed inset-0 bg-black/60 z-0"></div>
 
-                <img src={Background} alt="background" className="absolute inset-0 w-full h-full object-cover"
-                />
-
-                <div className="absolute inset-0 bg-black/60"></div>
-
-                <div className="relative z-10 w-full max-w-7xl text-center flex flex-col items-center gap-8">
-
-                    <img src={Banner} alt="Top Movies Banner" className="w-full max-w-[500px] sm:max-w-[700px] md:max-w-3xl mx-auto object-contain"
+            {/* Main content */}
+            <div className="relative z-10 flex flex-col items-center gap-8 px-4 py-8">
+                {/* Hero Section */}
+                <section className="w-full max-w-7xl text-center flex flex-col items-center gap-8">
+                    <img
+                        src={Banner}
+                        alt="Top Movies Banner"
+                        className="w-full max-w-[500px] sm:max-w-[700px] md:max-w-3xl mx-auto object-contain"
                     />
 
-                    <h1 className="heading">
-                        Find <span className="text-gradient">Movies</span> You Will Enjoy Without the Hassle
+                    <h1 className="heading text-2xl sm:text-4xl md:text-6xl text-white">
+                        Find <span className="text-gradient">Movies</span> You Will Enjoy
+                        Without the Hassle
                     </h1>
 
+                    {/* Search */}
                     <Search searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
-                    <h1 className="text-white">{searchTerm}</h1>
-                </div>
+                </section>
 
+                {/* Movie List Section */}
+                <section className="w-full max-w-7xl mt-12">
+                    <h2 className="text-white text-2xl mb-4">All Movies</h2>
 
-                <div className="all-movies relative flex items-center justify-center px-4 overflow-hidden">
-                    <h2>All Movies</h2>
-
-                    {isloading? (
-                        <p className="text-white">Loading...</p>
+                    {isLoading ? (
+                        <div className="flex justify-center mt-6">
+                            <Spinner />
+                        </div>
                     ) : errorMessage ? (
                         <p className="text-red-500">{errorMessage}</p>
                     ) : (
-                        <ul>
+                        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6 mt-6">
                             {moviesList.map((movie) => (
-                                <p className="text-white">{movie.title}</p>
+                                <div key={movie.id} className="text-center">
+                                    {movie.poster_path ? (
+                                        <img
+                                            src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
+                                            alt={movie.title}
+                                            className="rounded-lg object-cover w-full h-[300px]"
+                                        />
+                                    ) : (
+                                        <div className="bg-gray-700 w-full h-[300px] rounded-lg flex items-center justify-center">
+                                            <p className="text-gray-300">No Image</p>
+                                        </div>
+                                    )}
+                                    <p className="mt-2 text-white">{movie.title}</p>
+                                </div>
                             ))}
-                        </ul>
+                        </div>
                     )}
-                </div>
-            </section>
 
 
-        </header>
-
+                </section>
+            </div>
+        </div>
     );
 };
 
