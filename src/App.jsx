@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Background from "./assets/background.png";
 import Banner from "./assets/banner.png";
+import Logo from "./assets/logo.svg";
 import Search from "./components/Search.jsx";
 import Spinner from "./components/Spinner.jsx";
 import MovieCard from "./components/MovieCard.jsx";
@@ -66,9 +67,24 @@ const App = () => {
             />
             <div className="fixed inset-0 bg-black/60 z-0"></div>
 
+
+
+
+
             {/* Main content */}
             <div className="relative z-10 flex flex-col items-center gap-8 px-4 py-8">
-                {/* Hero Section */}
+                 {/*Hero Section */}
+
+                <section>
+                    <img
+                        src={Logo}
+                        alt="App Logo"
+                        className="w-full max-w-[250px] sm:max-w-[350px] md:max-w-[450px] lg:max-w-[550px] mx-auto object-contain"
+                    />
+                </section>
+
+
+
                 <section className="w-full max-w-7xl text-center flex flex-col items-center gap-8">
                     <img
                         src={Banner}
