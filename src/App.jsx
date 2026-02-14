@@ -4,6 +4,7 @@ import Banner from "./assets/banner.png";
 import Search from "./components/Search.jsx";
 import Spinner from "./components/Spinner.jsx";
 import MovieCard from "./components/MovieCard.jsx";
+import { useDebounce} from "react-use";
 
 const API_BASE_URL = "https://api.themoviedb.org/3";
 const API_KEY = import.meta.env.VITE_TMDB_API_KEY;
@@ -21,6 +22,10 @@ const App = () => {
     const [moviesList, setMoviesList] = useState([]);
     const [errorMessage, setErrorMessage] = useState("");
     const [isLoading, setIsLoading] = useState(false);
+    const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
+
+
+    useDebounce( () => setDebouncedSearchTerm(searchTerm), 800, [searchTerm] );
 
     const fetchMovies = async (query = "") => {
         setIsLoading(true);
@@ -48,8 +53,8 @@ const App = () => {
 
     // Fetch movies on mount or when searchTerm changes
     useEffect(() => {
-        fetchMovies(searchTerm);
-    }, [searchTerm]);
+        fetchMovies(debouncedSearchTerm);
+    }, [debouncedSearchTerm]);
 
     return (
         <div className="relative min-h-screen w-full overflow-x-hidden">
