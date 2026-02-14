@@ -1,5 +1,7 @@
 import React from "react";
 import { StarIcon } from "@heroicons/react/24/solid";
+import NoMovie from "../assets/no-movie.png";
+
 
 const MovieCard = ({ movie }) => {
     const {
@@ -17,11 +19,12 @@ const MovieCard = ({ movie }) => {
                 src={
                     poster_path
                         ? `https://image.tmdb.org/t/p/w500${poster_path}`
-                        : "https://via.placeholder.com/500x750?text=No+Image"
+                        : NoMovie
                 }
                 alt={title}
                 className="rounded-lg object-cover w-full h-[300px]"
             />
+
 
             {/* Movie Info */}
             <div className="mt-3 flex flex-col gap-2">
