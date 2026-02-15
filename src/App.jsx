@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from "react";
+import Footer from "./components/Footer.jsx";
 import Background from "./assets/background.png";
 import Banner from "./assets/banner.png";
 import Logo from "./assets/logo.svg";
+import NoMovie from "./assets/no-movie.png";
 import Search from "./components/Search.jsx";
 import Spinner from "./components/Spinner.jsx";
 import MovieCard from "./components/MovieCard.jsx";
 import { useDebounce} from "react-use";
-import {updateSearchCount} from "./appwrite.js";
-
+import {getTrendingMovies, updateSearchCount} from "./appwrite.js";
 const API_BASE_URL = "https://api.themoviedb.org/3";
 const API_KEY = import.meta.env.VITE_TMDB_API_KEY;
 
@@ -23,6 +24,7 @@ const App = () => {
     const [searchTerm, setSearchTerm] = useState("");
     const [moviesList, setMoviesList] = useState([]);
     const [errorMessage, setErrorMessage] = useState("");
+    const [trendingMovieList, setTrendingMovieList] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
     const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
 
@@ -58,10 +60,24 @@ const App = () => {
         }
     };
 
+    const loadTrendingMovies = async () => {
+        try {
+            const movies = await getTrendingMovies();
+            setTrendingMovieList(movies);
+        } catch (error) {
+            console.log("Error fetching trending movies:", error);
+        }
+    };
+
+
     // Fetch movies on mount or when searchTerm changes
     useEffect(() => {
         fetchMovies(debouncedSearchTerm);
     }, [debouncedSearchTerm]);
+
+  useEffect(() => {
+      loadTrendingMovies();
+  }, []);
 
     return (
         <div className="relative min-h-screen w-full overflow-x-hidden">
@@ -107,6 +123,39 @@ const App = () => {
                     <Search searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
                 </section>
 
+                {trendingMovieList.length > 0 && (
+                    <section className="w-full max-w-7xl mt-16 px-2 sm:px-4">
+                        <h2 className="text-white text-3xl sm:text-4xl font-bold mb-6 sm:mb-10">
+                            Trending Searches
+                        </h2>
+
+                        {/* Horizontal scroll for screens >= 760px */}
+                        <ul className="flex flex-row gap-4 sm:gap-6 overflow-x-auto snap-x snap-mandatory scrollbar-hide">
+                            {trendingMovieList.map((movie, index) => (
+                                <li
+                                    key={movie.$id}
+                                    className="relative group flex-shrink-0 w-36 sm:w-40 md:w-44 snap-start cursor-pointer"
+                                >
+                                    {/* Badge Number */}
+                                    <span className="absolute top-1 left-1 bg-yellow-400 text-black font-bold text-sm sm:text-base px-2 py-1 rounded-md z-10">
+            #{index + 1}
+          </span>
+
+                                    {/* Poster */}
+                                    <img
+                                        src={movie.poster_url ? movie.poster_url : NoMovie}
+                                        alt={movie.movie_title || "No Image"}
+                                        className="w-full h-[180px] sm:h-[220px] md:h-[260px] object-cover rounded-xl transition duration-300 group-hover:scale-105"
+                                    />
+                                </li>
+                            ))}
+                        </ul>
+                    </section>
+                )}
+
+
+
+
                 {/* Movie List Section */}
                 <section className="w-full max-w-7xl mt-12">
                     <h2 className="text-white text-4xl mb-8">All Movies</h2>
@@ -125,8 +174,10 @@ const App = () => {
                         </div>
                     )}
                 </section>
+                <Footer />
 
             </div>
+
         </div>
     );
 };
