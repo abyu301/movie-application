@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import Footer from "./components/Footer.jsx";
+import Footer from "../Footer.jsx";
 import Background from "./assets/background.png";
 import Banner from "./assets/banner.png";
 import Logo from "./assets/logo.svg";
